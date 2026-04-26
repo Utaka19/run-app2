@@ -33,6 +33,10 @@ export default function App() {
     setDistance("");
   };
 
+  const deleteRun = (id: string) => {
+    setRuns((prev) => prev.filter((run) => run.id !== id));
+  };
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#121212", padding: 20 }}>
       <StatusBar style="light" />
@@ -77,6 +81,7 @@ export default function App() {
           <View style={{ padding: 10, borderBottomWidth: 1, borderColor: "gray" }}>
             <Text style={{ color: "white" }}>{item.date}</Text>
             <Text style={{ color: "white" }}>{item.distance} km</Text>
+            <Button title="削除" onPress={() => deleteRun(item.id)} />
           </View>
         )}
       />
