@@ -18,6 +18,7 @@ type Run = {
 export default function App() {
   const [distance, setDistance] = useState("");
   const [runs, setRuns] = useState<Run[]>([]);
+  const total = runs.reduce((sum, run) => sum + run.distance, 0);
 
   const addRun = () => {
     if (!distance) return;
@@ -52,6 +53,10 @@ export default function App() {
         }}
       >
         🏃‍♂️ ランニングログ
+      </Text>
+
+      <Text style={{ color: "white", marginBottom: 10 }}>
+        合計: {total.toFixed(1)} km
       </Text>
 
       {/* 入力 */}
