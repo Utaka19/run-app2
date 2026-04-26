@@ -9,13 +9,34 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 
+type Run = {
+  id: string;
+  distance: number;
+  date: string;
+};
+
 export default function App() {
   const [distance, setDistance] = useState("");
+  const [runs, setRuns] = useState<Run[]>([]);
+
+  const addRun = () => {
+    if (!distance) return;
+    if (isNaN(Number(distance))) return;
+
+    const newRun: Run = {
+      id: Date.now().toString(),
+      distance: Number(distance),
+      date: new Date().toLocaleDateString(),
+    };
+
+    setRuns((prev) => [newRun, ...prev]);
+    setDistance("");
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#121212", padding: 20 }}>
       <StatusBar style="light" />
-      
+
       {/* タイトル */}
       <Text
         style={{
@@ -46,22 +67,16 @@ export default function App() {
       />
 
       {/* ボタン */}
-      <Button title="保存" onPress={() => {}} />
+      <Button title="保存" onPress={addRun} />
 
-      {/* リスト（まだ空） */}
+      {/* リスト */}
       <FlatList
-        data={[]}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={() => (
-          <View
-            style={{
-              padding: 10,
-              borderBottomWidth: 1,
-              borderColor: "gray",
-            }}
-          >
-            <Text style={{ color: "white" }}>2026/04/25</Text>
-            <Text style={{ color: "white" }}>5 km</Text>
+        data={runs}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={{ padding: 10, borderBottomWidth: 1, borderColor: "gray" }}>
+            <Text style={{ color: "white" }}>{item.date}</Text>
+            <Text style={{ color: "white" }}>{item.distance} km</Text>
           </View>
         )}
       />
