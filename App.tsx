@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Run = {
   id: string;
@@ -19,6 +20,7 @@ export default function App() {
   const [distance, setDistance] = useState("");
   const [runs, setRuns] = useState<Run[]>([]);
   const total = runs.reduce((sum, run) => sum + run.distance, 0);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const addRun = () => {
     if (!distance) return;
@@ -37,6 +39,30 @@ export default function App() {
   const deleteRun = (id: string) => {
     setRuns((prev) => prev.filter((run) => run.id !== id));
   };
+
+  useEffect(() => {
+    const load = async () => {
+      const data = await AsyncStorage.getItem("runs");
+
+      if (data) {
+        setRuns(JSON.parse(data));
+      }
+
+      setIsLoaded(true);
+    };
+
+    load();
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    const save = async () => {
+      await AsyncStorage.setItem("runs", JSON.stringify(runs));
+    };
+
+    save();
+  }, [runs, isLoaded]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#121212", padding: 20 }}>
