@@ -15,23 +15,41 @@ export default function App() {
   const [runs, setRuns] = useState<Run[]>([]);
   const total = runs.reduce((sum, run) => sum + run.distance, 0);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const addRun = () => {
+  const addOrUpdateRun = () => {
     if (!distance) return;
     if (isNaN(Number(distance))) return;
 
-    const newRun: Run = {
-      id: Date.now().toString(),
-      distance: Number(distance),
-      date: new Date().toLocaleDateString(),
-    };
+    if (editingId) {
+      // ✏️ 更新
+      setRuns((prev) =>
+        prev.map((run) =>
+          run.id === editingId ? { ...run, distance: Number(distance) } : run,
+        ),
+      );
+      setEditingId(null);
+    } else {
+      // ➕ 追加
+      const newRun: Run = {
+        id: Date.now().toString(),
+        distance: Number(distance),
+        date: new Date().toLocaleDateString(),
+      };
 
-    setRuns((prev) => [newRun, ...prev]);
+      setRuns((prev) => [newRun, ...prev]);
+    }
+
     setDistance('');
   };
 
   const deleteRun = (id: string) => {
     setRuns((prev) => prev.filter((run) => run.id !== id));
+  };
+
+  const startEdit = (run: Run) => {
+    setDistance(run.distance.toString());
+    setEditingId(run.id);
   };
 
   useEffect(() => {
@@ -96,7 +114,7 @@ export default function App() {
       />
 
       {/* ボタン */}
-      <Button title="保存" onPress={addRun} />
+      <Button title={editingId ? '更新' : '保存'} onPress={addOrUpdateRun} />
 
       {/* リスト */}
       <FlatList
@@ -104,11 +122,29 @@ export default function App() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View
-            style={{ padding: 10, borderBottomWidth: 1, borderColor: 'gray' }}
+            style={{
+              padding: 10,
+              borderBottomWidth: 1,
+              borderColor: 'gray',
+            }}
           >
             <Text style={{ color: 'white' }}>{item.date}</Text>
             <Text style={{ color: 'white' }}>{item.distance} km</Text>
-            <Button title="削除" onPress={() => deleteRun(item.id)} />
+
+            {/* ボタンエリア */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 10,
+              }}
+            >
+              <View style={{ marginRight: 10 }}>
+                <Button title="編集" onPress={() => startEdit(item)} />
+              </View>
+
+              <Button title="削除" onPress={() => deleteRun(item.id)} />
+            </View>
           </View>
         )}
       />
