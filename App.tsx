@@ -94,18 +94,35 @@ export default function App() {
       <Text
         style={{
           color: 'white',
-          fontSize: 24,
+          fontSize: 28,
           fontWeight: 'bold',
-          marginBottom: 20,
+          marginBottom: 10,
           textAlign: 'center',
         }}
       >
         🏃‍♂️ ランニングログ
       </Text>
 
-      <Text style={{ color: 'white', marginBottom: 10 }}>
-        合計: {total.toFixed(1)} km
-      </Text>
+      <View
+        style={{
+          backgroundColor: '#1e1e1e',
+          padding: 15,
+          borderRadius: 10,
+          marginBottom: 15,
+        }}
+      >
+        <Text style={{ color: '#aaa', marginBottom: 5 }}>合計距離</Text>
+
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 24,
+            fontWeight: 'bold',
+          }}
+        >
+          {total.toFixed(1)} km
+        </Text>
+      </View>
 
       {/* 入力 */}
       <View style={{ marginBottom: 15 }}>
@@ -130,7 +147,20 @@ export default function App() {
       </View>
 
       {/* ボタン */}
-      <Button title={editingId ? '更新' : '保存'} onPress={addOrUpdateRun} />
+      <TouchableOpacity
+        onPress={addOrUpdateRun}
+        style={{
+          backgroundColor: editingId ? '#FF9800' : '#2196F3',
+          padding: 15,
+          borderRadius: 10,
+          alignItems: 'center',
+          marginBottom: 20,
+        }}
+      >
+        <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+          {editingId ? '更新する' : '保存する'}
+        </Text>
+      </TouchableOpacity>
 
       {/* リスト */}
       <FlatList
