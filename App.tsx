@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -160,16 +167,36 @@ export default function App() {
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
+                marginTop: 10,
               }}
             >
-              <View style={{ flex: 1, marginRight: 5 }}>
-                <Button title="編集" onPress={() => startEdit(item)} />
-              </View>
+              <TouchableOpacity
+                onPress={() => startEdit(item)}
+                style={{
+                  backgroundColor: '#4CAF50',
+                  padding: 10,
+                  borderRadius: 8,
+                  flex: 1,
+                  marginRight: 5,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>編集</Text>
+              </TouchableOpacity>
 
-              <View style={{ flex: 1, marginLeft: 5 }}>
-                <Button title="削除" onPress={() => deleteRun(item.id)} />
-              </View>
+              <TouchableOpacity
+                onPress={() => deleteRun(item.id)}
+                style={{
+                  backgroundColor: '#F44336',
+                  padding: 10,
+                  borderRadius: 8,
+                  flex: 1,
+                  marginLeft: 5,
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ color: 'white', fontWeight: 'bold' }}>削除</Text>
+              </TouchableOpacity>
             </View>
           </View>
         )}
