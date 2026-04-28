@@ -77,7 +77,10 @@ export default function App() {
   }, [runs, isLoaded]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#121212', padding: 20 }}>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: '#121212', padding: 20 }}
+      edges={['top', 'bottom']}
+    >
       <StatusBar style="light" />
 
       {/* タイトル */}
