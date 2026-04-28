@@ -6,7 +6,7 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
-  useColorScheme,
+  Appearance,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -24,8 +24,7 @@ export default function App() {
   const total = runs.reduce((sum, run) => sum + run.distance, 0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const systemTheme = useColorScheme();
-  const [theme, setTheme] = useState(systemTheme ?? 'dark');
+  const [theme, setTheme] = useState(Appearance.getColorScheme() ?? 'dark');
   const colors = {
     dark: {
       background: '#121212',
@@ -107,165 +106,182 @@ export default function App() {
     save();
   }, [runs, isLoaded]);
 
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      console.log('テーマ変更検知:', colorScheme); // ← これ追加
+      if (colorScheme) {
+        setTheme(colorScheme);
+      }
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: c.background, padding: 20 }}
+      style={{ flex: 1, backgroundColor: c.background }}
       edges={['top', 'bottom']}
     >
-      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
+      <View style={{ padding: 20 }}>
+        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
 
-      {/* タイトル */}
-      <Text
-        style={{
-          color: c.text,
-          fontSize: 28,
-          fontWeight: 'bold',
-          marginBottom: 20,
-          textAlign: 'center',
-        }}
-      >
-        🏃‍♂️ ランニングログ
-      </Text>
-
-      <View
-        style={{
-          backgroundColor: c.card,
-          padding: 15,
-          borderRadius: 10,
-          marginBottom: 15,
-        }}
-      >
-        <Text style={{ color: c.subText, marginBottom: 5 }}>合計距離</Text>
-
+        {/* タイトル */}
         <Text
           style={{
             color: c.text,
             fontSize: 28,
             fontWeight: 'bold',
+            marginBottom: 20,
+            textAlign: 'center',
           }}
         >
-          {total.toFixed(1)} km
+          🏃‍♂️ ランニングログ
         </Text>
-      </View>
 
-      {/* 入力 */}
-      <View style={{ marginBottom: 15 }}>
-        <Text style={{ color: c.subText, marginBottom: 5 }}>距離 (km)</Text>
-
-        <TextInput
-          value={distance}
-          onChangeText={setDistance}
-          keyboardType="numeric"
-          placeholder="例: 5.0"
-          placeholderTextColor="#666"
+        <View
           style={{
-            backgroundColor: c.input,
-            color: c.text,
-            padding: 12,
+            backgroundColor: c.card,
+            padding: 15,
             borderRadius: 10,
-            fontSize: 16,
-            borderWidth: 1.5,
-            borderColor: c.border,
+            marginBottom: 15,
           }}
-        />
-      </View>
+        >
+          <Text style={{ color: c.subText, marginBottom: 5 }}>合計距離</Text>
 
-      {/* ボタン */}
-      <TouchableOpacity
-        onPress={addOrUpdateRun}
-        style={{
-          backgroundColor: editingId ? '#FF9800' : '#2196F3',
-          padding: 15,
-          borderRadius: 10,
-          alignItems: 'center',
-          marginBottom: 20,
-        }}
-        activeOpacity={0.7}
-      >
-        <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
-          {editingId ? '更新する' : '保存する'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* リスト */}
-      <FlatList
-        data={runs}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View
+          <Text
             style={{
-              backgroundColor: c.background,
-              padding: 15,
-              marginBottom: 12,
-              borderRadius: 10,
-
-              // 影（iOS）
-              shadowColor: '#000',
-              shadowOpacity: 0.3,
-              shadowRadius: 4,
-              shadowOffset: { width: 0, height: 2 },
-
-              // 影（Android）
-              elevation: 3,
+              color: c.text,
+              fontSize: 28,
+              fontWeight: 'bold',
             }}
           >
-            {/* 日付 */}
-            <Text style={{ color: c.subText, marginBottom: 5 }}>
-              {item.date}
-            </Text>
+            {total.toFixed(1)} km
+          </Text>
+        </View>
 
-            {/* 距離 */}
-            <Text
-              style={{
-                color: c.text,
-                fontSize: 20,
-                fontWeight: 'bold',
-                marginBottom: 10,
-              }}
-            >
-              {item.distance} km
-            </Text>
+        {/* 入力 */}
+        <View style={{ marginBottom: 15 }}>
+          <Text style={{ color: c.subText, marginBottom: 5 }}>距離 (km)</Text>
 
-            {/* ボタンエリア */}
+          <TextInput
+            value={distance}
+            onChangeText={setDistance}
+            keyboardType="numeric"
+            placeholder="例: 5.0"
+            placeholderTextColor="#666"
+            style={{
+              backgroundColor: c.input,
+              color: c.text,
+              padding: 12,
+              borderRadius: 10,
+              fontSize: 16,
+              borderWidth: 1.5,
+              borderColor: c.border,
+            }}
+          />
+        </View>
+
+        {/* ボタン */}
+        <TouchableOpacity
+          onPress={addOrUpdateRun}
+          style={{
+            backgroundColor: editingId ? '#FF9800' : '#2196F3',
+            padding: 15,
+            borderRadius: 10,
+            alignItems: 'center',
+            marginBottom: 20,
+          }}
+          activeOpacity={0.7}
+        >
+          <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+            {editingId ? '更新する' : '保存する'}
+          </Text>
+        </TouchableOpacity>
+
+        {/* リスト */}
+        <FlatList
+          data={runs}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
             <View
               style={{
-                flexDirection: 'row',
-                marginTop: 10,
+                backgroundColor: c.background,
+                padding: 15,
+                marginBottom: 12,
+                borderRadius: 10,
+
+                // 影（iOS）
+                shadowColor: '#000',
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+                shadowOffset: { width: 0, height: 2 },
+
+                // 影（Android）
+                elevation: 3,
               }}
             >
-              <TouchableOpacity
-                onPress={() => startEdit(item)}
-                style={{
-                  backgroundColor: '#4CAF50',
-                  padding: 10,
-                  borderRadius: 8,
-                  flex: 1,
-                  marginRight: 5,
-                  alignItems: 'center',
-                }}
-                activeOpacity={0.7}
-              >
-                <Text style={{ color: 'white', fontWeight: 'bold' }}>編集</Text>
-              </TouchableOpacity>
+              {/* 日付 */}
+              <Text style={{ color: c.subText, marginBottom: 5 }}>
+                {item.date}
+              </Text>
 
-              <TouchableOpacity
-                onPress={() => deleteRun(item.id)}
+              {/* 距離 */}
+              <Text
                 style={{
-                  backgroundColor: '#F44336',
-                  padding: 10,
-                  borderRadius: 8,
-                  flex: 1,
-                  marginLeft: 5,
-                  alignItems: 'center',
+                  color: c.text,
+                  fontSize: 20,
+                  fontWeight: 'bold',
+                  marginBottom: 10,
                 }}
-                activeOpacity={0.7}
               >
-                <Text style={{ color: 'white', fontWeight: 'bold' }}>削除</Text>
-              </TouchableOpacity>
+                {item.distance} km
+              </Text>
+
+              {/* ボタンエリア */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 10,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => startEdit(item)}
+                  style={{
+                    backgroundColor: '#4CAF50',
+                    padding: 10,
+                    borderRadius: 8,
+                    flex: 1,
+                    marginRight: 5,
+                    alignItems: 'center',
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                    編集
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => deleteRun(item.id)}
+                  style={{
+                    backgroundColor: '#F44336',
+                    padding: 10,
+                    borderRadius: 8,
+                    flex: 1,
+                    marginLeft: 5,
+                    alignItems: 'center',
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                    削除
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      </View>
     </SafeAreaView>
   );
 }
