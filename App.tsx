@@ -6,6 +6,7 @@ import {
   Button,
   FlatList,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -23,6 +24,29 @@ export default function App() {
   const total = runs.reduce((sum, run) => sum + run.distance, 0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const systemTheme = useColorScheme();
+  const [theme, setTheme] = useState(systemTheme ?? 'dark');
+  const colors = {
+    dark: {
+      background: '#121212',
+      card: '#1e1e1e',
+      text: 'white',
+      subText: '#aaa',
+      input: '#1e1e1e',
+      border: '#333',
+      primary: '#2196F3',
+    },
+    light: {
+      background: '#f5f5f5',
+      card: 'white',
+      text: '#111',
+      subText: '#555',
+      input: 'white',
+      border: '#ddd',
+      primary: '#2196F3',
+    },
+  };
+  const c = colors[theme];
 
   const addOrUpdateRun = () => {
     if (!distance) return;
@@ -85,15 +109,15 @@ export default function App() {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: '#121212', padding: 20 }}
+      style={{ flex: 1, backgroundColor: c.background, padding: 20 }}
       edges={['top', 'bottom']}
     >
-      <StatusBar style="light" />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
 
       {/* タイトル */}
       <Text
         style={{
-          color: 'white',
+          color: c.text,
           fontSize: 28,
           fontWeight: 'bold',
           marginBottom: 20,
@@ -105,17 +129,17 @@ export default function App() {
 
       <View
         style={{
-          backgroundColor: '#1e1e1e',
+          backgroundColor: c.card,
           padding: 15,
           borderRadius: 10,
           marginBottom: 15,
         }}
       >
-        <Text style={{ color: '#aaa', marginBottom: 5 }}>合計距離</Text>
+        <Text style={{ color: c.subText, marginBottom: 5 }}>合計距離</Text>
 
         <Text
           style={{
-            color: 'white',
+            color: c.text,
             fontSize: 28,
             fontWeight: 'bold',
           }}
@@ -126,7 +150,7 @@ export default function App() {
 
       {/* 入力 */}
       <View style={{ marginBottom: 15 }}>
-        <Text style={{ color: '#aaa', marginBottom: 5 }}>距離 (km)</Text>
+        <Text style={{ color: c.subText, marginBottom: 5 }}>距離 (km)</Text>
 
         <TextInput
           value={distance}
@@ -135,13 +159,13 @@ export default function App() {
           placeholder="例: 5.0"
           placeholderTextColor="#666"
           style={{
-            backgroundColor: '#1e1e1e',
-            color: 'white',
+            backgroundColor: c.input,
+            color: c.text,
             padding: 12,
             borderRadius: 10,
             fontSize: 16,
             borderWidth: 1.5,
-            borderColor: '#333',
+            borderColor: c.border,
           }}
         />
       </View>
@@ -170,7 +194,7 @@ export default function App() {
         renderItem={({ item }) => (
           <View
             style={{
-              backgroundColor: '#1e1e1e',
+              backgroundColor: c.background,
               padding: 15,
               marginBottom: 12,
               borderRadius: 10,
@@ -186,12 +210,14 @@ export default function App() {
             }}
           >
             {/* 日付 */}
-            <Text style={{ color: '#aaa', marginBottom: 5 }}>{item.date}</Text>
+            <Text style={{ color: c.subText, marginBottom: 5 }}>
+              {item.date}
+            </Text>
 
             {/* 距離 */}
             <Text
               style={{
-                color: 'white',
+                color: c.text,
                 fontSize: 20,
                 fontWeight: 'bold',
                 marginBottom: 10,
