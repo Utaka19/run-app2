@@ -96,7 +96,7 @@ export default function App() {
           color: 'white',
           fontSize: 28,
           fontWeight: 'bold',
-          marginBottom: 10,
+          marginBottom: 20,
           textAlign: 'center',
         }}
       >
@@ -116,7 +116,7 @@ export default function App() {
         <Text
           style={{
             color: 'white',
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: 'bold',
           }}
         >
@@ -140,7 +140,7 @@ export default function App() {
             padding: 12,
             borderRadius: 10,
             fontSize: 16,
-            borderWidth: 1,
+            borderWidth: 1.5,
             borderColor: '#333',
           }}
         />
@@ -156,6 +156,7 @@ export default function App() {
           alignItems: 'center',
           marginBottom: 20,
         }}
+        activeOpacity={0.7}
       >
         <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
           {editingId ? '更新する' : '保存する'}
@@ -171,7 +172,7 @@ export default function App() {
             style={{
               backgroundColor: '#1e1e1e',
               padding: 15,
-              marginBottom: 10,
+              marginBottom: 12,
               borderRadius: 10,
 
               // 影（iOS）
@@ -216,6 +217,7 @@ export default function App() {
                   marginRight: 5,
                   alignItems: 'center',
                 }}
+                activeOpacity={0.7}
               >
                 <Text style={{ color: 'white', fontWeight: 'bold' }}>編集</Text>
               </TouchableOpacity>
@@ -230,6 +232,7 @@ export default function App() {
                   marginLeft: 5,
                   alignItems: 'center',
                 }}
+                activeOpacity={0.7}
               >
                 <Text style={{ color: 'white', fontWeight: 'bold' }}>削除</Text>
               </TouchableOpacity>
