@@ -123,27 +123,50 @@ export default function App() {
         renderItem={({ item }) => (
           <View
             style={{
-              padding: 10,
-              borderBottomWidth: 1,
-              borderColor: 'gray',
+              backgroundColor: '#1e1e1e',
+              padding: 15,
+              marginBottom: 10,
+              borderRadius: 10,
+
+              // 影（iOS）
+              shadowColor: '#000',
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              shadowOffset: { width: 0, height: 2 },
+
+              // 影（Android）
+              elevation: 3,
             }}
           >
-            <Text style={{ color: 'white' }}>{item.date}</Text>
-            <Text style={{ color: 'white' }}>{item.distance} km</Text>
+            {/* 日付 */}
+            <Text style={{ color: '#aaa', marginBottom: 5 }}>{item.date}</Text>
+
+            {/* 距離 */}
+            <Text
+              style={{
+                color: 'white',
+                fontSize: 20,
+                fontWeight: 'bold',
+                marginBottom: 10,
+              }}
+            >
+              {item.distance} km
+            </Text>
 
             {/* ボタンエリア */}
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginTop: 10,
               }}
             >
-              <View style={{ marginRight: 10 }}>
+              <View style={{ flex: 1, marginRight: 5 }}>
                 <Button title="編集" onPress={() => startEdit(item)} />
               </View>
 
-              <Button title="削除" onPress={() => deleteRun(item.id)} />
+              <View style={{ flex: 1, marginLeft: 5 }}>
+                <Button title="削除" onPress={() => deleteRun(item.id)} />
+              </View>
             </View>
           </View>
         )}
