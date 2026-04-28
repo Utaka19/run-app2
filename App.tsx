@@ -108,20 +108,26 @@ export default function App() {
       </Text>
 
       {/* 入力 */}
-      <TextInput
-        placeholder="距離 (km)"
-        value={distance}
-        onChangeText={setDistance}
-        keyboardType="numeric"
-        style={{
-          borderWidth: 1,
-          borderColor: 'gray',
-          padding: 10,
-          marginBottom: 10,
-          color: 'white',
-        }}
-        placeholderTextColor="gray"
-      />
+      <View style={{ marginBottom: 15 }}>
+        <Text style={{ color: '#aaa', marginBottom: 5 }}>距離 (km)</Text>
+
+        <TextInput
+          value={distance}
+          onChangeText={setDistance}
+          keyboardType="numeric"
+          placeholder="例: 5.0"
+          placeholderTextColor="#666"
+          style={{
+            backgroundColor: '#1e1e1e',
+            color: 'white',
+            padding: 12,
+            borderRadius: 10,
+            fontSize: 16,
+            borderWidth: 1,
+            borderColor: '#333',
+          }}
+        />
+      </View>
 
       {/* ボタン */}
       <Button title={editingId ? '更新' : '保存'} onPress={addOrUpdateRun} />
